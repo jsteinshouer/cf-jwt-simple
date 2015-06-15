@@ -7,11 +7,10 @@
 
 	PARAMETERS: 
 		key - HMAC key used for token signitures
-	USAGE NOTES:
+	
 			
 --->
 
-	
 <cfcomponent output="false">
 	
 	<cffunction name="init" output="false">

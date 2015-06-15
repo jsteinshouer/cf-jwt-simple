@@ -1,0 +1,30 @@
+{
+    "name":"CF JWT Simple",
+    "slug":"cf-jwt-simple",
+    "shortDescription":"CFML component for encoding and decoding JSON Web Tokens (JWT)",
+    "description":"",
+    "version":"1.0.0",
+    "author":"Jason Steinshouer <jason.steinshouer@gmail.com>",
+    "location":"https://github.com/jsteinshouer/cf-jwt-simple/archive/master.zip",
+    "repository":{
+        "type":"git",
+        "url":"https://github.com/jsteinshouer/cf-jwt-simple"
+    },
+    "keywords":[
+        "jwt",
+        "JSON Web Token"
+    ],
+    "license":[
+        {
+            "type":"MIT",
+            "url":"http://opensource.org/licenses/MIT"
+        }
+    ],
+    "bugs":"https://github.com/jsteinshouer/cf-jwt-simple/issues",
+    "private":false,
+    "ignore":[
+        "**/.*",
+        "tests",
+        "readme.md"
+    ]
+}

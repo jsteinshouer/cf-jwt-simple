@@ -10,7 +10,7 @@
 	---> 
 	<cffunction name="setUp" output="false">
 		<cfset var key = "abcdefg">
-		<cfset jwt = createObject("component","../src/jwt").init(key)>
+		<cfset jwt = new jwt(key)>
 		<cfset json = '{"ts":"February, 05 2014 12:08:05","userid":"jdoe"}'>
 		<cfset payload = deserializeJSON(json)>
 

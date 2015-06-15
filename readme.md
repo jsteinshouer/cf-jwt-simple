@@ -1,4 +1,4 @@
-# cf-jwt-simple
+# CF-JWT-Simple
 
 ## Description
 
@@ -9,7 +9,7 @@ This is a port of the node.js project [node-jwt-simple](https://github.com/hokac
 
 ## Usage
 	<!--- Initialize the component with the secret signing key --->
-    <cfset jwt = createObject("component","jwt").init(secretkey)>
+    <cfset jwt = new jwt(secretkey)>
 	<cfset payload = {"ts" = now(), "userid" = "jdoe"}>
 	<!--- Encode the data structure as a json web token --->
 	<cfset token = jwt.encode(payload)>
