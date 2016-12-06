@@ -15,8 +15,15 @@
 	
 	<cffunction name="init" output="false">
 		<cfargument name="key" required="true">
-
+		<cfargument name="ignoreExpiration" type="boolean" default="false" hint="If true, verification will ignore expiration.">
+		<cfargument name="issuer" type="string" default="" hint="If not provided, verification will ignore issuer.">
+		<cfargument name="audience" type="string" default="" hint="If not provided, verification will ignore audience.">
+		
 		<cfset variables.key = arguments.key>
+		<cfset variables.ignoreExpiration = arguments.ignoreExpiration>
+		<cfset variables.issuer = arguments.issuer>
+		<cfset variables.audience = arguments.audience>
+
 		<!--- Supported algorithms --->
 		<cfset variables.algorithmMap = {
 			"HS256" = "HmacSHA256",
@@ -48,10 +55,30 @@
 			<cfthrow type="Invalid Token" message="Algorithm not supported">
 		</cfif>
 
-		<!--- Verify signiture --->
+		<!--- Verify claims --->
+		<cfif StructKeyExists(payload,"exp") and not variables.ignoreExpiration>
+			<cfset var exp=DateAdd("s",payload.exp,DateConvert("utc2Local","January 1 1970 00:00"))>
+			<cfif exp gt now()>
+				<cfthrow type="Invalid Token" message="Signature verification failed: Token expired">
+			</cfif>
+		</cfif>
+		<cfif StructKeyExists(payload,"nbf")>
+			<cfset var nbf=DateAdd("s",payload.nbf,DateConvert("utc2Local","January 1 1970 00:00"))>
+			<cfif nbf lt now()>
+				<cfthrow type="Invalid Token" message="Signature verification failed: Token not yet active">
+			</cfif>
+		</cfif>
+		<cfif StructKeyExists(payload,"iss") and variables.issuer neq "" and payload.iss neq variables.issuer>
+			<cfthrow type="Invalid Token" message="Signature verification failed: Issuer does not match">
+		</cfif>
+		<cfif StructKeyExists(payload,"aud") and variables.audience neq "" and payload.aud neq variables.audience>
+			<cfthrow type="Invalid Token" message="Signature verification failed: Audience does not match">
+		</cfif>
+
+		<!--- Verify signature --->
 		<cfset var signInput = listGetAt(arguments.token,1,".") & "." & listGetAt(arguments.token,2,".")>
 		<cfif signiture neq sign(signInput,algorithmMap[header.alg])>
-			<cfthrow type="Invalid Token" message="Signiture verification failed">
+			<cfthrow type="Invalid Token" message="Signature verification failed: Invalid key">
 		</cfif>
 
 		<cfreturn payload>
