@@ -57,14 +57,14 @@
 
 		<!--- Verify claims --->
 		<cfif StructKeyExists(payload,"exp") and not variables.ignoreExpiration>
-			<cfset var exp=DateAdd("s",payload.exp,DateConvert("utc2Local","January 1 1970 00:00"))>
-			<cfif exp lt now()>
+			<!--- <cfset var exp=DateAdd("s",payload.exp,DateConvert("utc2Local","January 1 1970 00:00"))> --->
+			<cfif epochTimeToLocalDate(payload.exp) lt now()>
 				<cfthrow type="Invalid Token" message="Signature verification failed: Token expired">
 			</cfif>
 		</cfif>
 		<cfif StructKeyExists(payload,"nbf")>
-			<cfset var nbf=DateAdd("s",payload.nbf,DateConvert("utc2Local","January 1 1970 00:00"))>
-			<cfif nbf gt now()>
+			<!--- <cfset var nbf=DateAdd("s",payload.nbf,DateConvert("utc2Local","January 1 1970 00:00"))> --->
+			<cfif epochTimeToLocalDate(payload.nbf) gt now()>
 				<cfthrow type="Invalid Token" message="Signature verification failed: Token not yet active">
 			</cfif>
 		</cfif>
@@ -173,5 +173,18 @@
 		<cfreturn toString(toBinary(base64UrlUnescape(arguments.str)))>
 	</cffunction>
 
-	
+	<!--- 	epochTimeToLocalDate(numeric) as Datetime
+			Description:  Converts Epoch datetime to local date
+
+			I changed the date conversion to use Java instead of dateAdd()
+			because currently (12/12/2016), ACF dateAdd uses an integer so there is a limit
+			of 2147483647 (Tue, 19 Jan 2038 03:14:07 GMT) which i doubt anyone 
+			will still use this in 2038 but I changed it anyway.
+	---> 
+	<cffunction name="epochTimeToLocalDate" output="false" access="private">
+		<cfargument name="epoch" required="true" hint="Seconds from Jan 1, 1970">
+
+		<cfreturn createObject("java", "java.util.Date").init(epoch*1000)>
+	</cffunction>
+
 </cfcomponent>
