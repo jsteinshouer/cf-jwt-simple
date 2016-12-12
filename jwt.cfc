@@ -57,16 +57,12 @@
 
 		<!--- Verify claims --->
 		<cfif StructKeyExists(payload,"exp") and not variables.ignoreExpiration>
-			<!--- <cfset var exp=DateAdd("s",payload.exp,DateConvert("utc2Local","January 1 1970 00:00"))> --->
 			<cfif epochTimeToLocalDate(payload.exp) lt now()>
 				<cfthrow type="Invalid Token" message="Signature verification failed: Token expired">
 			</cfif>
 		</cfif>
-		<cfif StructKeyExists(payload,"nbf")>
-			<!--- <cfset var nbf=DateAdd("s",payload.nbf,DateConvert("utc2Local","January 1 1970 00:00"))> --->
-			<cfif epochTimeToLocalDate(payload.nbf) gt now()>
-				<cfthrow type="Invalid Token" message="Signature verification failed: Token not yet active">
-			</cfif>
+		<cfif StructKeyExists(payload,"nbf") and epochTimeToLocalDate(payload.nbf) gt now()>
+			<cfthrow type="Invalid Token" message="Signature verification failed: Token not yet active">
 		</cfif>
 		<cfif StructKeyExists(payload,"iss") and variables.issuer neq "" and payload.iss neq variables.issuer>
 			<cfthrow type="Invalid Token" message="Signature verification failed: Issuer does not match">
