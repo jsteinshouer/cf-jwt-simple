@@ -11,6 +11,7 @@ env:
     - ENGINE=lucee@5
     - ENGINE=adobe@2016
     - ENGINE=adobe@11
+    - ENGINE=adobe@2018
 before_install:
 - sudo apt-key adv --keyserver keys.gnupg.net --recv 6DA70622
 - sudo echo "deb http://downloads.ortussolutions.com/debs/noarch /" | sudo tee -a

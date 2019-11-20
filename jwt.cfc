@@ -180,7 +180,7 @@
 	<cffunction name="epochTimeToLocalDate" output="false" access="private">
 		<cfargument name="epoch" required="true" hint="Seconds from Jan 1, 1970">
 
-		<cfreturn createObject("java", "java.util.Date").init(epoch*1000)>
+		<cfreturn createObject("java", "java.util.Date").init(javaCast("long",epoch*1000))>
 	</cffunction>
 
 </cfcomponent>
