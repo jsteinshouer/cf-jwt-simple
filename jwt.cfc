@@ -45,10 +45,15 @@
 			<cfthrow type="Invalid Token" message="Token should contain 3 segments">
 		</cfif>
 
-		<!--- Get  --->
-		<cfset var header = deserializeJSON(base64UrlDecode(listGetAt(arguments.token,1,".")))>
-		<cfset var payload = deserializeJSON(base64UrlDecode(listGetAt(arguments.token,2,".")))>
-		<cfset var signature = listGetAt(arguments.token,3,".")>
+		<!--- Decode token and catch any deserialzation errors  --->
+		<cftry>
+			<cfset var header = deserializeJSON(base64UrlDecode(listGetAt(arguments.token,1,".")))>
+			<cfset var payload = deserializeJSON(base64UrlDecode(listGetAt(arguments.token,2,".")))>
+			<cfset var signature = listGetAt(arguments.token,3,".")>
+		<cfcatch>
+			<cfthrow type="Invalid Token"  message="Signature verification failed: Token Invalid">
+		</cfcatch>
+		</cftry>
 
 		<!--- Make sure the algorithm listed in the header is supported --->
 		<cfif listFindNoCase(structKeyList(algorithmMap),header.alg) eq false>
