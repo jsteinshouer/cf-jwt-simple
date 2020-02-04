@@ -6,7 +6,7 @@
 		Based on jwt-simple node.js library (https://github.com/hokaccha/node-jwt-simple)
 
 	PARAMETERS: 
-		key - HMAC key used for token signitures
+		key - HMAC key used for token signatures
 	
 			
 --->
@@ -48,7 +48,7 @@
 		<!--- Get  --->
 		<cfset var header = deserializeJSON(base64UrlDecode(listGetAt(arguments.token,1,".")))>
 		<cfset var payload = deserializeJSON(base64UrlDecode(listGetAt(arguments.token,2,".")))>
-		<cfset var signiture = listGetAt(arguments.token,3,".")>
+		<cfset var signature = listGetAt(arguments.token,3,".")>
 
 		<!--- Make sure the algorithm listed in the header is supported --->
 		<cfif listFindNoCase(structKeyList(algorithmMap),header.alg) eq false>
@@ -73,7 +73,7 @@
 
 		<!--- Verify signature --->
 		<cfset var signInput = listGetAt(arguments.token,1,".") & "." & listGetAt(arguments.token,2,".")>
-		<cfif signiture neq sign(signInput,algorithmMap[header.alg])>
+		<cfif signature neq sign(signInput,algorithmMap[header.alg])>
 			<cfthrow type="Invalid Token" message="Signature verification failed: Invalid key">
 		</cfif>
 
@@ -106,7 +106,7 @@
 	</cffunction>
 
 	<!--- 	verify(token) as Boolean
-			Description:  Verify the token signiture
+			Description:  Verify the token signature
 	---> 
 	<cffunction name="verify" output="false">
 		<cfargument name="token" required="true">
